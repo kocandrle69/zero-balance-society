@@ -53,17 +53,21 @@ body::after {
 nav {
   position:fixed; top:0; left:0; right:0;
   z-index:800;
-  padding:22px 64px;
+  padding:20px 64px;
   display:flex; align-items:center; justify-content:space-between;
+  background: rgba(247,243,236,0.52);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid rgba(184,146,42,0.1);
   transition:all 0.5s cubic-bezier(0.4,0,0.2,1);
 }
 nav.scrolled {
   padding:14px 64px;
-  background: rgba(247,243,236,0.82);
-  backdrop-filter: blur(28px) saturate(1.6);
-  -webkit-backdrop-filter: blur(28px) saturate(1.6);
-  border-bottom: 1px solid rgba(184,146,42,0.12);
-  box-shadow: 0 2px 32px rgba(28,24,16,0.06);
+  background: rgba(247,243,236,0.88);
+  backdrop-filter: blur(32px) saturate(1.8);
+  -webkit-backdrop-filter: blur(32px) saturate(1.8);
+  border-bottom: 1px solid rgba(184,146,42,0.15);
+  box-shadow: 0 2px 28px rgba(28,24,16,0.07);
 }
 .logo {
   display:flex; align-items:center; gap:14px;
@@ -116,30 +120,163 @@ nav.scrolled {
 .hero {
   position:relative;
   height:100vh; min-height:700px;
-  display:grid; grid-template-columns:1fr 1fr;
-  align-items:center; overflow:hidden;
-  background:var(--bg);
+  display:flex; align-items:flex-end;
+  overflow:hidden;
 }
-.hero-img-side {
-  position:absolute; top:0; right:0;
-  width:58%; height:100%; overflow:hidden;
+.hero-bg-full {
+  position:absolute; inset:0;
 }
-.hero-img-side img {
+.hero-bg-full img {
   width:100%; height:100%;
-  object-fit:cover; object-position:center 20%;
-  filter:saturate(0.55) brightness(0.88);
-  transform:scale(1.04);
+  object-fit:cover; object-position:center 40%;
+  filter:saturate(0.72) brightness(0.94);
+  transform:scale(1.03);
 }
-.hero-img-side::before {
-  content:''; position:absolute; inset:0; z-index:1;
-  background:linear-gradient(90deg, var(--bg) 0%, rgba(247,243,236,0.6) 38%, transparent 100%);
+.hero-bg-full::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(247,243,236,0.05) 0%,
+    transparent            25%,
+    transparent            52%,
+    rgba(247,243,236,0.45) 78%,
+    rgba(247,243,236,0.85) 100%
+  );
 }
-.hero-img-side::after {
-  content:''; position:absolute; inset:0; z-index:1;
-  background:linear-gradient(to bottom,
-    rgba(247,243,236,0.35) 0%, transparent 20%,
-    transparent 75%, rgba(247,243,236,0.5) 100%);
+/* floating glass orbs */
+.orb {
+  position:absolute; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,
+    rgba(255,255,255,0.65), rgba(255,255,255,0.1));
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.5);
+  box-shadow:0 8px 32px rgba(28,24,16,0.05), inset 0 1px 0 rgba(255,255,255,0.8);
+  pointer-events:none; z-index:3;
+  animation:float-orb ease-in-out infinite;
 }
+@keyframes float-orb {
+  0%,100% { transform:translateY(0) scale(1); }
+  50%     { transform:translateY(-16px) scale(1.02); }
+}
+/* bottom layout: card left, description right */
+.hero-bottom {
+  position:relative; z-index:4;
+  width:100%;
+  padding:0 80px 64px;
+  display:flex;
+  align-items:flex-end;
+  gap:48px;
+}
+/* glass card — title + buttons only, no description */
+.hero-glass-card {
+  flex-shrink:0;
+  max-width:460px;
+  padding:40px 48px 44px;
+  background:rgba(255,255,255,0.8);
+  backdrop-filter:blur(44px) saturate(2);
+  -webkit-backdrop-filter:blur(44px) saturate(2);
+  border:1px solid rgba(255,255,255,0.95);
+  border-radius:28px;
+  box-shadow:
+    0 28px 80px rgba(28,24,16,0.14),
+    0 4px 16px rgba(28,24,16,0.06),
+    inset 0 1px 0 rgba(255,255,255,1);
+  position:relative;
+}
+.hero-glass-card::before {
+  content:'';
+  position:absolute; top:0; left:40px; right:120px; height:2px;
+  border-radius:0 0 2px 2px;
+  background:linear-gradient(90deg, var(--gold) 0%, rgba(184,146,42,0.15) 100%);
+}
+/* description — outside card, bottom right */
+.hero-desc-side {
+  flex:1;
+  max-width:400px;
+  padding-bottom:12px;
+  opacity:0; animation:up 0.9s 0.8s forwards;
+}
+.hero-desc-side p {
+  font-size:17px; font-weight:300;
+  line-height:1.88; color:rgba(28,24,16,0.65);
+}
+.hero-label {
+  font-family:'Cinzel',serif; font-size:9.5px;
+  letter-spacing:0.44em; color:var(--gold);
+  text-transform:uppercase; margin-bottom:20px;
+  display:flex; align-items:center; gap:12px;
+  opacity:0; animation:up 0.7s 0.15s forwards;
+}
+.hero-label::before {
+  content:''; display:block; width:28px; height:1px; background:var(--gold);
+}
+h1.hero-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(46px,5vw,76px); font-weight:600;
+  line-height:1.0; letter-spacing:-0.015em;
+  color:var(--ink2); margin-bottom:28px;
+  opacity:0; animation:up 0.9s 0.3s forwards;
+}
+h1.hero-title em { font-style:italic; color:var(--gold); font-weight:400; }
+h1.hero-title .dot { color:var(--gold); }
+.hero-line {
+  width:48px; height:1px;
+  background:linear-gradient(90deg, var(--gold), transparent);
+  margin-bottom:22px;
+  opacity:0; animation:up 0.7s 0.45s forwards;
+}
+.hero-btns {
+  display:flex; gap:14px; align-items:center;
+  opacity:0; animation:up 0.7s 0.6s forwards;
+}
+.btn-gold {
+  padding:14px 36px; background:var(--gold);
+  color:#fff; font-family:'Cinzel',serif;
+  font-size:10px; letter-spacing:0.22em;
+  text-transform:uppercase; text-decoration:none;
+  border-radius:100px; transition:all 0.35s;
+  display:inline-block; font-weight:600;
+  box-shadow:0 4px 20px rgba(184,146,42,0.25);
+}
+.btn-gold:hover {
+  background:var(--ink2);
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(28,24,16,0.2);
+}
+.btn-text {
+  display:flex; align-items:center; gap:11px;
+  color:var(--muted); font-family:'Cinzel',serif;
+  font-size:10px; letter-spacing:0.2em;
+  text-transform:uppercase; text-decoration:none;
+  transition:color 0.3s;
+}
+.btn-text:hover { color:var(--ink); }
+.play-ring {
+  width:42px; height:42px; border-radius:50%;
+  border:1px solid rgba(28,24,16,0.15);
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(10px);
+  box-shadow:var(--shadow);
+}
+.hero-scroll {
+  position:absolute; bottom:72px; left:50%;
+  transform:translateX(-50%);
+  z-index:5; display:flex; flex-direction:column;
+  align-items:center; gap:10px;
+  opacity:0; animation:up 0.7s 1.4s forwards;
+}
+.hero-scroll span {
+  font-family:'Cinzel',serif; font-size:9px;
+  letter-spacing:0.32em; color:rgba(28,24,16,0.32);
+  text-transform:uppercase;
+}
+.scroll-bar {
+  width:1px; height:36px;
+  background:linear-gradient(to bottom, var(--gold), transparent);
+  animation:pulse-bar 2s ease infinite;
+}
+@keyframes pulse-bar {0%,100%{opacity:1}50%{opacity:0.3}}
 
 /* floating glass orbs */
 .orb {
@@ -800,34 +937,39 @@ footer {
 
 <!-- HERO -->
 <section class="hero" id="hero">
-  <div class="hero-img-side" id="heroImg">
-    <img src="images/gate.png" alt="India">
+  <div class="hero-bg-full" id="heroImg">
+    <img src="images/darbar1.png" alt="Gathering">
   </div>
 
   <!-- floating glass orbs -->
-  <div class="orb" style="width:220px;height:220px;top:12%;right:28%;animation-duration:7s;opacity:0.6;"></div>
-  <div class="orb" style="width:120px;height:120px;top:55%;right:14%;animation-duration:9s;animation-delay:-3s;opacity:0.45;"></div>
-  <div class="orb" style="width:80px;height:80px;top:30%;right:10%;animation-duration:6s;animation-delay:-1.5s;opacity:0.4;"></div>
+  <div class="orb" style="width:200px;height:200px;top:10%;right:22%;animation-duration:8s;opacity:0.55;"></div>
+  <div class="orb" style="width:110px;height:110px;top:52%;right:10%;animation-duration:10s;animation-delay:-4s;opacity:0.4;"></div>
+  <div class="orb" style="width:70px;height:70px;top:26%;right:8%;animation-duration:6.5s;animation-delay:-2s;opacity:0.38;"></div>
 
-  <div class="hero-glass-card">
-    <div class="hero-label">A space for</div>
-    <h1 class="hero-title">
-      Meditation<span class="dot">.</span><br>
-      <em>Culture.</em><br>
-      Community<span class="dot">.</span>
-    </h1>
-    <div class="hero-line"></div>
-    <p class="hero-desc">Zero Balance Society is a non-profit association inspired by Indian traditions. We create space for meditation, education, cultural exchange and conscious connection.</p>
-    <div class="hero-btns">
-      <a href="#about" class="btn-gold">Discover More</a>
-      <a href="#india" class="btn-text">
-        <div class="play-ring">
-          <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
-            <path d="M1 1L9 6L1 11V1Z" fill="currentColor"/>
-          </svg>
-        </div>
-        Watch Intro
-      </a>
+  <div class="hero-bottom">
+    <div class="hero-glass-card">
+      <div class="hero-label">A space for</div>
+      <h1 class="hero-title">
+        Meditation<span class="dot">.</span><br>
+        <em>Culture.</em><br>
+        Community<span class="dot">.</span>
+      </h1>
+      <div class="hero-line"></div>
+      <div class="hero-btns">
+        <a href="#about" class="btn-gold">Discover More</a>
+        <a href="#india" class="btn-text">
+          <div class="play-ring">
+            <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
+              <path d="M1 1L9 6L1 11V1Z" fill="currentColor"/>
+            </svg>
+          </div>
+          Watch Intro
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-desc-side">
+      <p>Zero Balance Society is a non-profit association inspired by Indian traditions. We create space for meditation, education, cultural exchange and conscious connection.</p>
     </div>
   </div>
 
@@ -1159,10 +1301,10 @@ window.addEventListener('scroll', () => {
 });
 
 // Parallax hero image
-const heroImg = document.getElementById('heroImg');
+const heroImg = document.querySelector('#heroImg img');
 window.addEventListener('scroll', () => {
-  if (window.scrollY < window.innerHeight) {
-    heroImg.style.transform = 'translateY(' + (window.scrollY * 0.15) + 'px)';
+  if (heroImg && window.scrollY < window.innerHeight) {
+    heroImg.style.transform = 'scale(1.03) translateY(' + (window.scrollY * 0.12) + 'px)';
   }
 });
 
