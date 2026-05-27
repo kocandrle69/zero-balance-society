@@ -160,14 +160,24 @@ nav.scrolled {
 .hero-glass-card {
   position:relative; z-index:4;
   margin:120px 0 0 80px;
-  padding:48px 52px;
-  max-width:520px;
-  background: var(--glass);
-  backdrop-filter:blur(32px) saturate(1.5);
-  -webkit-backdrop-filter:blur(32px) saturate(1.5);
-  border:1px solid var(--glass-border);
-  border-radius:28px;
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.9);
+  padding:52px 56px;
+  max-width:540px;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter:blur(40px) saturate(1.8);
+  -webkit-backdrop-filter:blur(40px) saturate(1.8);
+  border:1px solid rgba(255,255,255,0.9);
+  border-radius:32px;
+  box-shadow:
+    0 32px 100px rgba(28,24,16,0.16),
+    0 8px 32px rgba(28,24,16,0.08),
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(184,146,42,0.08);
+}
+.hero-glass-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:3px;
+  border-radius:32px 32px 0 0;
+  background:linear-gradient(90deg, transparent 0%, var(--gold) 40%, rgba(184,146,42,0.4) 100%);
 }
 
 .hero-label {
@@ -182,12 +192,12 @@ nav.scrolled {
 }
 h1.hero-title {
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(48px,5.2vw,78px); font-weight:300;
-  line-height:0.97; letter-spacing:-0.01em;
+  font-size:clamp(52px,5.5vw,82px); font-weight:600;
+  line-height:0.97; letter-spacing:-0.015em;
   color:var(--ink2); margin-bottom:32px;
   opacity:0; animation:up 0.9s 0.35s forwards;
 }
-h1.hero-title em { font-style:italic; color:var(--gold); }
+h1.hero-title em { font-style:italic; color:var(--gold); font-weight:400; }
 h1.hero-title .dot { color:var(--gold); }
 .hero-line {
   width:56px; height:1px;
@@ -600,33 +610,60 @@ h1.hero-title .dot { color:var(--gold); }
 .event-link::after { content:'→'; transition:transform 0.3s; }
 .event-link:hover::after { transform:translateX(4px); }
 
-/* ── JOIN ── */
+/* ── JOIN CTA ── */
 .join {
-  padding:160px 80px;
-  position:relative; overflow:hidden; text-align:center;
+  position:relative; overflow:hidden;
+  min-height:92vh;
+  display:flex; align-items:center;
 }
 .join-bg {
   position:absolute; inset:0;
-  background-image:url('images/darbar1.png');
-  background-size:cover; background-position:center 35%;
-  filter:saturate(0.3) brightness(0.75);
+  background-image:url('images/yog.png');
+  background-size:cover; background-position:center 30%;
+  filter:saturate(0.45) brightness(0.6);
+  transform:scale(1.02);
+  transition:transform 12s ease;
 }
 .join-bg::after {
   content:''; position:absolute; inset:0;
-  background:linear-gradient(to bottom,
-    rgba(247,243,236,0.92) 0%,
-    rgba(247,243,236,0.82) 50%,
-    rgba(247,243,236,0.92) 100%);
+  background:linear-gradient(
+    160deg,
+    rgba(247,243,236,0.96) 0%,
+    rgba(247,243,236,0.88) 30%,
+    rgba(247,243,236,0.6)  60%,
+    rgba(28,24,16,0.25)   100%
+  );
 }
-.join-content {
+.join-inner {
   position:relative; z-index:1;
-  max-width:620px; margin:0 auto;
+  width:100%; max-width:1200px;
+  margin:0 auto;
+  padding:120px 80px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:80px;
+  align-items:center;
 }
-.join-content p {
+.join-left {}
+.join-left .section-label { margin-bottom:24px; }
+.join-left h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(42px,4.5vw,72px);
+  font-weight:600; line-height:1.0;
+  letter-spacing:-0.015em;
+  color:var(--ink2); margin-bottom:0;
+}
+.join-left h2 em {
+  font-style:italic; font-weight:400;
+  color:var(--gold); display:block;
+}
+.join-right {}
+.join-right p {
   font-size:18px; font-weight:300;
-  color:var(--muted); line-height:1.9; margin-bottom:48px;
+  color:var(--muted); line-height:1.9;
+  margin-bottom:44px;
 }
-.join-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.join-btns { display:flex; gap:16px; flex-wrap:wrap; }
 .btn-outline {
   padding:14px 36px;
   border:1px solid rgba(28,24,16,0.18);
@@ -638,6 +675,19 @@ h1.hero-title .dot { color:var(--gold); }
   backdrop-filter:blur(10px);
 }
 .btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+
+/* big number accent */
+.join-number {
+  position:absolute;
+  bottom:-40px; right:80px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:320px; font-weight:700;
+  line-height:1;
+  color:rgba(184,146,42,0.05);
+  pointer-events:none;
+  letter-spacing:-0.05em;
+  user-select:none;
+}
 
 /* ── FOOTER ── */
 footer {
@@ -936,15 +986,23 @@ footer {
         <p class="act-desc">Transformative retreats and cultural immersions</p>
       </div>
     </div>
-    <div class="act-card act-plain r" style="transition-delay:.08s">
-      <span class="act-tag">Knowledge</span>
-      <div class="act-title">Study &amp; Discussion</div>
-      <p class="act-desc">Exploring wisdom traditions together in an open and curious setting</p>
+    <div class="act-card r" style="transition-delay:.08s">
+      <img src="images/babaji.png" alt="Study and Discussion">
+      <div class="act-card-overlay"></div>
+      <div class="act-card-content">
+        <span class="act-tag">Knowledge</span>
+        <div class="act-title">Study &amp; Discussion</div>
+        <p class="act-desc">Exploring wisdom traditions together in an open and curious setting</p>
+      </div>
     </div>
-    <div class="act-card act-plain r" style="transition-delay:.16s">
-      <span class="act-tag">Community</span>
-      <div class="act-title">Gatherings</div>
-      <p class="act-desc">Regular community meetings, connection and shared celebration</p>
+    <div class="act-card r" style="transition-delay:.16s">
+      <img src="images/darbar2.png" alt="Gatherings">
+      <div class="act-card-overlay"></div>
+      <div class="act-card-content">
+        <span class="act-tag">Community</span>
+        <div class="act-title">Gatherings</div>
+        <p class="act-desc">Regular community meetings, connection and shared celebration</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1011,18 +1069,24 @@ footer {
 <!-- JOIN -->
 <section class="join" id="join">
   <div class="join-bg"></div>
-  <div class="join-content r">
-    <div class="section-label" style="justify-content:center;">Your Invitation</div>
-    <h2 class="section-title" style="text-align:center;font-family:'Cormorant Garamond',serif;font-weight:300;">
-      Join the <span class="acc">Society</span>
-    </h2>
-    <p>Zero Balance Society is an open community — for those who seek stillness, cultural depth, and genuine human connection. Whether you are new to meditation or have walked this path for years, there is a place for you here.</p>
-    <div class="join-btns">
-      <a href="#" class="btn-gold">Become a Member</a>
-      <a href="#" class="btn-outline">Explore Activities</a>
-      <a href="#" class="btn-outline">Contact Us</a>
+  <div class="join-inner">
+    <div class="join-left r">
+      <div class="section-label">Your Invitation</div>
+      <h2>
+        Join the<br>
+        <em>Society.</em>
+      </h2>
+    </div>
+    <div class="join-right r" style="transition-delay:.15s">
+      <p>Zero Balance Society is an open community — for those who seek stillness, cultural depth, and genuine human connection. Whether you are new to meditation or have walked this path for years, there is a place for you here.</p>
+      <div class="join-btns">
+        <a href="#" class="btn-gold">Become a Member</a>
+        <a href="#" class="btn-outline">Explore Activities</a>
+        <a href="#" class="btn-outline">Contact Us</a>
+      </div>
     </div>
   </div>
+  <div class="join-number">ZB</div>
 </section>
 
 <!-- FOOTER -->
