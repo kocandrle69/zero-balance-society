@@ -27,6 +27,7 @@
   --shadow-lg: 0 24px 80px rgba(28,24,16,0.12);
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+img { display:block; } /* prevent baseline gap on all images */
 html { scroll-behavior:smooth; }
 body {
   background: var(--bg);
@@ -55,7 +56,7 @@ nav {
   z-index:800;
   padding:20px 64px;
   display:flex; align-items:center; justify-content:space-between;
-  background: rgba(247,243,236,0.72);
+  background: rgba(247,243,236,0.52);
   backdrop-filter: blur(20px) saturate(1.5);
   -webkit-backdrop-filter: blur(20px) saturate(1.5);
   border-bottom: 1px solid rgba(184,146,42,0.1);
@@ -105,16 +106,14 @@ nav.scrolled {
 }
 .nav-links a:hover { color:var(--ink); }
 .nav-links a:hover::after { transform:scaleX(1); }
-.nav-join {
-  padding:10px 26px;
-  border:1px solid var(--gold);
-  color:var(--gold); font-family:'Cinzel',serif;
-  font-size:10px; letter-spacing:0.2em;
-  text-transform:uppercase; text-decoration:none;
-  border-radius:100px; transition:all 0.3s;
-  background: rgba(184,146,42,0.04);
+
+/* Join — accented nav link, separated by a subtle divider */
+.nav-join-item { margin-left: 8px; padding-left: 20px; border-left: 1px solid rgba(184,146,42,0.2); }
+.nav-join-link {
+  color: var(--gold) !important;
+  font-weight: 600;
 }
-.nav-join:hover { background:var(--gold); color:#fff; }
+.nav-join-link::after { background: var(--gold) !important; }
 
 /* ── HERO ── */
 .hero {
@@ -212,12 +211,18 @@ nav.scrolled {
 }
 h1.hero-title {
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(46px,5vw,76px); font-weight:600;
-  line-height:1.0; letter-spacing:-0.015em;
-  color:var(--ink2); margin-bottom:28px;
+  font-size:clamp(54px,5.8vw,88px); font-weight:700;
+  line-height:0.97; letter-spacing:-0.02em;
+  color:var(--ink); margin-bottom:28px;
   opacity:0; animation:up 0.9s 0.3s forwards;
+  /* subtle text shadow for depth against glass */
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 }
-h1.hero-title em { font-style:italic; color:var(--gold); font-weight:400; }
+h1.hero-title em {
+  font-style:italic; color:var(--gold); font-weight:500;
+  /* gold gets a very soft glow */
+  text-shadow: 0 0 40px rgba(184,146,42,0.15);
+}
 h1.hero-title .dot { color:var(--gold); }
 .hero-line {
   width:48px; height:1px;
@@ -470,9 +475,10 @@ h1.hero-title .dot { color:var(--gold); }
   width:72%; height:72%;
   border-radius:24px; overflow:hidden;
   box-shadow:var(--shadow-lg);
+  line-height:0;
 }
 .about-img-main img {
-  width:100%; height:100%; object-fit:cover;
+  width:100%; height:100%; object-fit:cover; display:block;
   filter:saturate(0.7) brightness(0.95);
 }
 .about-img-aux {
@@ -481,9 +487,10 @@ h1.hero-title .dot { color:var(--gold); }
   border-radius:20px; overflow:hidden;
   border:1px solid rgba(255,255,255,0.8);
   box-shadow:var(--shadow);
+  line-height:0;
 }
 .about-img-aux img {
-  width:100%; height:100%; object-fit:cover;
+  width:100%; height:100%; object-fit:cover; display:block;
   filter:saturate(0.65);
 }
 .about-glass-tag {
@@ -560,12 +567,16 @@ h1.hero-title .dot { color:var(--gold); }
   position:relative; border-radius:22px; overflow:hidden;
   cursor:pointer; aspect-ratio:3/4; background:var(--bg2);
 }
-.act-card.large { grid-row:span 2; aspect-ratio:auto; }
+.act-card.large {
+  grid-row:span 2; aspect-ratio:auto;
+  min-height:500px; /* ensures image always has room to fill */
+}
 .act-card img {
   position:absolute; inset:0;
-  width:100%; height:100%; object-fit:cover;
+  width:100%; height:100%; object-fit:cover; object-position:center center;
   filter:saturate(0.55) brightness(0.88);
   transition:all 0.7s ease;
+  display:block; /* belt and suspenders */
 }
 .act-card:hover img { filter:saturate(0.75) brightness(0.95); transform:scale(1.04); }
 .act-card-overlay {
@@ -662,9 +673,14 @@ h1.hero-title .dot { color:var(--gold); }
   line-height:1.9; color:rgba(28,24,16,0.6); margin-bottom:16px;
 }
 .india-gallery { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:32px; }
-.india-gallery-img { border-radius:16px; overflow:hidden; aspect-ratio:4/3; }
+.india-gallery-img {
+  border-radius:16px; overflow:hidden;
+  aspect-ratio:4/3;
+  background:var(--bg2); /* fallback if image slow to load */
+  line-height:0; /* removes any inline gap */
+}
 .india-gallery-img img {
-  width:100%; height:100%; object-fit:cover;
+  width:100%; height:100%; object-fit:cover; display:block;
   filter:saturate(0.55); transition:all 0.5s;
 }
 .india-gallery-img:hover img { filter:saturate(0.8); transform:scale(1.04); }
@@ -895,6 +911,101 @@ footer {
 }
 .socials a:hover { border-color:var(--gold); color:var(--gold); }
 
+/* ── LANG DROPDOWN ── */
+.lang-dropdown {
+  position: relative;
+  margin-right: 20px;
+}
+.lang-trigger {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Cinzel', serif; font-size: 10px;
+  letter-spacing: 0.2em; color: var(--muted);
+  background: none; border: 1px solid rgba(184,146,42,0.2);
+  border-radius: 100px; cursor: pointer;
+  padding: 7px 14px 7px 12px;
+  transition: all 0.25s;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.lang-trigger:hover {
+  color: var(--ink);
+  border-color: rgba(184,146,42,0.45);
+  background: rgba(184,146,42,0.04);
+}
+.lang-trigger .lang-globe {
+  width: 14px; height: 14px; opacity: 0.5; flex-shrink: 0;
+}
+.lang-trigger .lang-arrow {
+  width: 8px; height: 8px; opacity: 0.4;
+  transition: transform 0.25s;
+  flex-shrink: 0;
+}
+.lang-dropdown.open .lang-arrow { transform: rotate(180deg); }
+.lang-trigger .lang-current { color: var(--gold); font-weight: 600; }
+
+.lang-menu {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  min-width: 180px;
+  background: rgba(252, 248, 242, 0.96);
+  backdrop-filter: blur(32px) saturate(1.8);
+  -webkit-backdrop-filter: blur(32px) saturate(1.8);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(28,24,16,0.12), 0 2px 8px rgba(28,24,16,0.06);
+  overflow: hidden;
+  opacity: 0; pointer-events: none;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 200;
+}
+.lang-dropdown.open .lang-menu {
+  opacity: 1; pointer-events: all;
+  transform: translateY(0) scale(1);
+}
+.lang-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 18px;
+  cursor: pointer;
+  transition: background 0.18s;
+  border-bottom: 1px solid rgba(184,146,42,0.06);
+  position: relative;
+}
+.lang-item:last-child { border-bottom: none; }
+.lang-item:hover { background: rgba(184,146,42,0.06); }
+.lang-item.active { background: rgba(184,146,42,0.08); }
+.lang-item.disabled { cursor: default; opacity: 0.45; }
+.lang-item.disabled:hover { background: none; }
+
+.lang-flag {
+  font-size: 18px; line-height: 1; flex-shrink: 0;
+}
+.lang-info { flex: 1; }
+.lang-code {
+  font-family: 'Cinzel', serif; font-size: 10px;
+  letter-spacing: 0.18em; color: var(--ink2);
+  text-transform: uppercase; display: block;
+  font-weight: 600; line-height: 1.2;
+}
+.lang-item.active .lang-code { color: var(--gold); }
+.lang-name {
+  font-size: 11px; color: var(--muted);
+  display: block; margin-top: 1px;
+}
+.lang-soon {
+  font-family: 'Cinzel', serif; font-size: 7.5px;
+  letter-spacing: 0.15em; color: var(--gold);
+  background: rgba(184,146,42,0.1);
+  border: 1px solid rgba(184,146,42,0.2);
+  border-radius: 4px; padding: 2px 6px;
+  text-transform: uppercase;
+}
+.lang-active-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px rgba(184,146,42,0.5);
+}
+
 /* ── ANIMATIONS ── */
 @keyframes up {
   from { opacity:0; transform:translateY(26px); }
@@ -925,14 +1036,76 @@ footer {
     </div>
   </a>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#philosophy">Philosophy</a></li>
-    <li><a href="#activities">Activities</a></li>
-    <li><a href="#india">India</a></li>
-    <li><a href="#events">Events</a></li>
-    <li><a href="#">Journal</a></li>
+    <li><a href="#about"       data-i18n="nav_about">About</a></li>
+    <li><a href="#philosophy"  data-i18n="nav_philosophy">Philosophy</a></li>
+    <li><a href="#activities"  data-i18n="nav_activities">Activities</a></li>
+    <li><a href="#india"       data-i18n="nav_india">India</a></li>
+    <li><a href="#events"      data-i18n="nav_events">Events</a></li>
+    <li><a href="#"            data-i18n="nav_journal">Journal</a></li>
+    <li class="nav-join-item"><a href="#join" data-i18n="nav_join" class="nav-join-link">Join the Society</a></li>
   </ul>
-  <a href="#join" class="nav-join">Join the Society</a>
+  <div class="lang-dropdown" id="langDropdown">
+    <button class="lang-trigger" onclick="toggleLangMenu()" id="langTrigger">
+      <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
+      </svg>
+      <span class="lang-current" id="langCurrent">EN</span>
+      <svg class="lang-arrow" viewBox="0 0 10 6" fill="currentColor">
+        <path d="M0 0l5 6 5-6z"/>
+      </svg>
+    </button>
+    <div class="lang-menu" id="langMenu">
+      <div class="lang-item active" onclick="setLang('en')" id="item-en">
+        <span class="lang-flag">🇬🇧</span>
+        <div class="lang-info">
+          <span class="lang-code">EN</span>
+          <span class="lang-name">English</span>
+        </div>
+        <span class="lang-active-dot" id="dot-en"></span>
+      </div>
+      <div class="lang-item" onclick="setLang('cs')" id="item-cs">
+        <span class="lang-flag">🇨🇿</span>
+        <div class="lang-info">
+          <span class="lang-code">CS</span>
+          <span class="lang-name">Čeština</span>
+        </div>
+        <span class="lang-active-dot" id="dot-cs" style="display:none"></span>
+      </div>
+      <div class="lang-item disabled">
+        <span class="lang-flag">🇮🇳</span>
+        <div class="lang-info">
+          <span class="lang-code">HI</span>
+          <span class="lang-name">हिन्दी</span>
+        </div>
+        <span class="lang-soon">Soon</span>
+      </div>
+      <div class="lang-item disabled">
+        <span class="lang-flag">🇪🇸</span>
+        <div class="lang-info">
+          <span class="lang-code">ES</span>
+          <span class="lang-name">Español</span>
+        </div>
+        <span class="lang-soon">Soon</span>
+      </div>
+      <div class="lang-item disabled">
+        <span class="lang-flag">🇵🇹</span>
+        <div class="lang-info">
+          <span class="lang-code">PT</span>
+          <span class="lang-name">Português</span>
+        </div>
+        <span class="lang-soon">Soon</span>
+      </div>
+      <div class="lang-item disabled">
+        <span class="lang-flag">🇩🇪</span>
+        <div class="lang-info">
+          <span class="lang-code">DE</span>
+          <span class="lang-name">Deutsch</span>
+        </div>
+        <span class="lang-soon">Soon</span>
+      </div>
+    </div>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -948,42 +1121,42 @@ footer {
 
   <div class="hero-bottom">
     <div class="hero-glass-card">
-      <div class="hero-label">A space for</div>
-      <h1 class="hero-title">
+      <div class="hero-label" data-i18n="hero_label">A space for</div>
+      <h1 class="hero-title" data-i18n-html="hero_title">
         Meditation<span class="dot">.</span><br>
         <em>Culture.</em><br>
         Community<span class="dot">.</span>
       </h1>
       <div class="hero-line"></div>
       <div class="hero-btns">
-        <a href="#about" class="btn-gold">Discover More</a>
+        <a href="#about" class="btn-gold" data-i18n="hero_btn1">Discover More</a>
         <a href="#india" class="btn-text">
           <div class="play-ring">
             <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
               <path d="M1 1L9 6L1 11V1Z" fill="currentColor"/>
             </svg>
           </div>
-          Watch Intro
+          <span data-i18n="hero_btn2">Watch Intro</span>
         </a>
       </div>
     </div>
 
     <div class="hero-desc-side">
-      <p>Zero Balance Society is a non-profit association inspired by Indian traditions. We create space for meditation, education, cultural exchange and conscious connection.</p>
+      <p data-i18n="hero_desc">Zero Balance Society is a non-profit association inspired by Indian traditions. We create space for meditation, education, cultural exchange and conscious connection.</p>
     </div>
   </div>
 
   <div class="hero-scroll">
-    <span>Scroll</span>
+    <span data-i18n="scroll">Scroll</span>
     <div class="scroll-bar"></div>
   </div>
 </section>
 
 <!-- PURPOSE / PHILOSOPHY -->
 <section class="purpose" id="philosophy">
-  <p class="purpose-label r">Our Purpose</p>
-  <h2 class="r" style="transition-delay:.08s">Rooted in tradition.<br><em>Open to the world.</em></h2>
-  <p class="purpose-desc r" style="transition-delay:.16s">We support contemplative practice, personal growth and cultural understanding through community, shared knowledge and lived experience.</p>
+  <p class="purpose-label r" data-i18n="purpose_label">Our Purpose</p>
+  <h2 class="r" style="transition-delay:.08s" data-i18n-html="purpose_title">Rooted in tradition.<br><em>Open to the world.</em></h2>
+  <p class="purpose-desc r" style="transition-delay:.16s" data-i18n="purpose_desc">We support contemplative practice, personal growth and cultural understanding through community, shared knowledge and lived experience.</p>
 
   <div class="pillars r" style="transition-delay:.24s">
     <div class="pillar">
@@ -995,8 +1168,8 @@ footer {
           <circle cx="24" cy="24" r="2.5" fill="rgba(184,146,42,0.8)"/>
         </svg>
       </div>
-      <span class="pillar-name">Stillness</span>
-      <p class="pillar-text">Cultivating inner silence and awareness.</p>
+      <span class="pillar-name" data-i18n="p1_name">Stillness</span>
+      <p class="pillar-text" data-i18n="p1_text">Cultivating inner silence and awareness.</p>
     </div>
     <div class="pillar">
       <div class="pillar-icon-wrap">
@@ -1005,8 +1178,8 @@ footer {
           <path d="M4 24 Q12 17 24 24 Q36 31 44 24" stroke="rgba(184,146,42,0.3)" stroke-width=".75" fill="none"/>
         </svg>
       </div>
-      <span class="pillar-name">Practice</span>
-      <p class="pillar-text">Daily sadhana, meditation and mantra.</p>
+      <span class="pillar-name" data-i18n="p2_name">Practice</span>
+      <p class="pillar-text" data-i18n="p2_text">Daily sadhana, meditation and mantra.</p>
     </div>
     <div class="pillar">
       <div class="pillar-icon-wrap">
@@ -1021,8 +1194,8 @@ footer {
           <circle cx="44" cy="24" r="2" fill="rgba(184,146,42,0.45)"/>
         </svg>
       </div>
-      <span class="pillar-name">Wisdom</span>
-      <p class="pillar-text">Learning from timeless teachings.</p>
+      <span class="pillar-name" data-i18n="p3_name">Wisdom</span>
+      <p class="pillar-text" data-i18n="p3_text">Learning from timeless teachings.</p>
     </div>
     <div class="pillar">
       <div class="pillar-icon-wrap">
@@ -1035,8 +1208,8 @@ footer {
           <line x1="15" y1="34" x2="33" y2="34" stroke="rgba(184,146,42,0.25)" stroke-width=".75"/>
         </svg>
       </div>
-      <span class="pillar-name">Community</span>
-      <p class="pillar-text">Connecting people on a shared path.</p>
+      <span class="pillar-name" data-i18n="p4_name">Community</span>
+      <p class="pillar-text" data-i18n="p4_text">Connecting people on a shared path.</p>
     </div>
     <div class="pillar">
       <div class="pillar-icon-wrap">
@@ -1046,8 +1219,8 @@ footer {
           <circle cx="24" cy="24" r="3.5" stroke="rgba(184,146,42,0.65)" stroke-width=".75" fill="none"/>
         </svg>
       </div>
-      <span class="pillar-name">Service</span>
-      <p class="pillar-text">Contributing to a better world together.</p>
+      <span class="pillar-name" data-i18n="p5_name">Service</span>
+      <p class="pillar-text" data-i18n="p5_text">Contributing to a better world together.</p>
     </div>
   </div>
 </section>
@@ -1062,29 +1235,29 @@ footer {
       <div class="about-img-aux">
         <img src="images/havan.png" alt="Gathering">
       </div>
-      <div class="about-glass-tag">Based in Czech Republic</div>
+      <div class="about-glass-tag" data-i18n="about_tag">Based in Czech Republic</div>
     </div>
     <div class="r" style="transition-delay:.18s">
-      <div class="section-label">Who We Are</div>
-      <h2 class="section-title">A Society.<br>A Movement.<br><span class="acc">A Way of Being.</span></h2>
-      <p class="about-text">Zero Balance Society is a non-profit cultural association inspired by Indian traditions. We are dedicated to personal development, education, conscious connection and the support of projects that create a positive impact.</p>
-      <p class="about-text">We believe that true balance begins within — and from that inner stillness, we can transform the world around us.</p>
+      <div class="section-label" data-i18n="about_label">Who We Are</div>
+      <h2 class="section-title" data-i18n-html="about_title">A Society.<br>A Movement.<br><span class="acc">A Way of Being.</span></h2>
+      <p class="about-text" data-i18n="about_p1">Zero Balance Society is a non-profit cultural association inspired by Indian traditions. We are dedicated to personal development, education, conscious connection and the support of projects that create a positive impact.</p>
+      <p class="about-text" data-i18n="about_p2">We believe that true balance begins within — and from that inner stillness, we can transform the world around us.</p>
       <div class="about-values">
         <div class="value-row">
           <div class="value-dot"></div>
-          <span>Non-profit association based in Czech Republic, open to all</span>
+          <span data-i18n="about_v1">Non-profit association based in Czech Republic, open to all</span>
         </div>
         <div class="value-row">
           <div class="value-dot"></div>
-          <span>Inspired by Indian contemplative traditions adapted for modern life</span>
+          <span data-i18n="about_v2">Inspired by Indian contemplative traditions adapted for modern life</span>
         </div>
         <div class="value-row">
           <div class="value-dot"></div>
-          <span>Building bridges between cultures through shared experience</span>
+          <span data-i18n="about_v3">Building bridges between cultures through shared experience</span>
         </div>
         <div class="value-row">
           <div class="value-dot"></div>
-          <span>Creating space for growth, reflection and conscious community</span>
+          <span data-i18n="about_v4">Creating space for growth, reflection and conscious community</span>
         </div>
       </div>
     </div>
@@ -1095,55 +1268,55 @@ footer {
 <section class="activities" id="activities">
   <div class="activities-header">
     <div class="r">
-      <div class="section-label">What We Do</div>
-      <h2 class="section-title">Activities &amp;<br><span class="acc">Offerings</span></h2>
+      <div class="section-label" data-i18n="act_label">What We Do</div>
+      <h2 class="section-title" data-i18n-html="act_title">Activities &amp;<br><span class="acc">Offerings</span></h2>
     </div>
-    <p class="r" style="transition-delay:.1s">We organise a variety of activities that support body, mind and spirit — inspired by Indian traditions and adapted to our time and context in Central Europe.</p>
+    <p class="r" style="transition-delay:.1s" data-i18n="act_desc">We organise a variety of activities that support body, mind and spirit — inspired by Indian traditions and adapted to our time and context in Central Europe.</p>
   </div>
   <div class="act-grid">
     <div class="act-card large r">
       <img src="images/darbar1.png" alt="Meditation">
       <div class="act-card-overlay"></div>
       <div class="act-card-content">
-        <span class="act-tag">Core Practice</span>
-        <div class="act-title">Meditation</div>
-        <p class="act-desc">Regular group practices, guided sessions and deep silence retreats</p>
+        <span class="act-tag" data-i18n="act1_tag">Core Practice</span>
+        <div class="act-title" data-i18n="act1_title">Meditation</div>
+        <p class="act-desc" data-i18n="act1_desc">Regular group practices, guided sessions and deep silence retreats</p>
       </div>
     </div>
     <div class="act-card r" style="transition-delay:.08s">
       <img src="images/havan.png" alt="Cultural event">
       <div class="act-card-overlay"></div>
       <div class="act-card-content">
-        <span class="act-tag">Culture</span>
-        <div class="act-title">Cultural Events</div>
-        <p class="act-desc">Lectures, music, dialogue and celebration</p>
+        <span class="act-tag" data-i18n="act2_tag">Culture</span>
+        <div class="act-title" data-i18n="act2_title">Cultural Events</div>
+        <p class="act-desc" data-i18n="act2_desc">Lectures, music, dialogue and celebration</p>
       </div>
     </div>
     <div class="act-card r" style="transition-delay:.16s">
       <img src="images/gur_ext.png" alt="India journeys">
       <div class="act-card-overlay"></div>
       <div class="act-card-content">
-        <span class="act-tag">Pilgrimage</span>
-        <div class="act-title">India Journeys</div>
-        <p class="act-desc">Transformative retreats and cultural immersions</p>
+        <span class="act-tag" data-i18n="act3_tag">Pilgrimage</span>
+        <div class="act-title" data-i18n="act3_title">India Journeys</div>
+        <p class="act-desc" data-i18n="act3_desc">Transformative retreats and cultural immersions</p>
       </div>
     </div>
     <div class="act-card r" style="transition-delay:.08s">
       <img src="images/babaji.png" alt="Study and Discussion">
       <div class="act-card-overlay"></div>
       <div class="act-card-content">
-        <span class="act-tag">Knowledge</span>
-        <div class="act-title">Study &amp; Discussion</div>
-        <p class="act-desc">Exploring wisdom traditions together in an open and curious setting</p>
+        <span class="act-tag" data-i18n="act4_tag">Knowledge</span>
+        <div class="act-title" data-i18n="act4_title">Study &amp; Discussion</div>
+        <p class="act-desc" data-i18n="act4_desc">Exploring wisdom traditions together in an open and curious setting</p>
       </div>
     </div>
     <div class="act-card r" style="transition-delay:.16s">
       <img src="images/darbar2.png" alt="Gatherings">
       <div class="act-card-overlay"></div>
       <div class="act-card-content">
-        <span class="act-tag">Community</span>
-        <div class="act-title">Gatherings</div>
-        <p class="act-desc">Regular community meetings, connection and shared celebration</p>
+        <span class="act-tag" data-i18n="act5_tag">Community</span>
+        <div class="act-title" data-i18n="act5_title">Gatherings</div>
+        <p class="act-desc" data-i18n="act5_desc">Regular community meetings, connection and shared celebration</p>
       </div>
     </div>
   </div>
@@ -1154,18 +1327,18 @@ footer {
   <div class="india-bg"></div>
   <div class="india-content">
     <div class="r">
-      <div class="section-label">The Source</div>
-      <h2 class="section-title">India —<br>Our Deepest<br><span class="acc">Inspiration</span></h2>
+      <div class="section-label" data-i18n="india_label">The Source</div>
+      <h2 class="section-title" data-i18n-html="india_title">India —<br>Our Deepest<br><span class="acc">Inspiration</span></h2>
       <div class="india-stats">
-        <div class="india-stat"><span class="num">3×</span><span class="lbl">Annual journeys</span></div>
-        <div class="india-stat"><span class="num">5+</span><span class="lbl">Years active</span></div>
-        <div class="india-stat"><span class="num">200+</span><span class="lbl">Members</span></div>
-        <div class="india-stat"><span class="num">6</span><span class="lbl">Languages</span></div>
+        <div class="india-stat"><span class="num">3×</span><span class="lbl" data-i18n="india_s1">Annual journeys</span></div>
+        <div class="india-stat"><span class="num">5+</span><span class="lbl" data-i18n="india_s2">Years active</span></div>
+        <div class="india-stat"><span class="num">200+</span><span class="lbl" data-i18n="india_s3">Members</span></div>
+        <div class="india-stat"><span class="num">6</span><span class="lbl" data-i18n="india_s4">Languages</span></div>
       </div>
     </div>
     <div class="india-right r" style="transition-delay:.2s">
-      <p>India is not merely a destination for us — it is the living source of our inspiration. The ancient traditions of contemplation, the depth of its culture, and the warmth of its people have shaped everything Zero Balance Society stands for.</p>
-      <p>Each year we organise group journeys to India — connecting our members to these traditions through direct experience, not only theory.</p>
+      <p data-i18n="india_p1">India is not merely a destination for us — it is the living source of our inspiration. The ancient traditions of contemplation, the depth of its culture, and the warmth of its people have shaped everything Zero Balance Society stands for.</p>
+      <p data-i18n="india_p2">Each year we organise group journeys to India — connecting our members to these traditions through direct experience, not only theory.</p>
       <div class="india-gallery">
         <div class="india-gallery-img"><img src="images/darbar2.png" alt="Gathering"></div>
         <div class="india-gallery-img"><img src="images/yog.png" alt="India"></div>
@@ -1176,34 +1349,34 @@ footer {
 
 <!-- QUOTE -->
 <div class="quote">
-  <blockquote>"In the stillness of the void,<br>the vibration begins.<br>In the vibration, <strong>balance</strong>.<br>In balance, we come together."</blockquote>
+  <blockquote data-i18n-html="quote">"In the stillness of the void,<br>the vibration begins.<br>In the vibration, <strong>balance</strong>.<br>In balance, we come together."</blockquote>
   <p class="quote-attr">— Zero Balance Society</p>
 </div>
 
 <!-- EVENTS -->
 <section class="events" id="events">
   <div style="max-width:1200px;margin:0 auto;" class="r">
-    <div class="section-label">Upcoming</div>
-    <h2 class="section-title">Events &amp;<br><span class="acc">Gatherings</span></h2>
+    <div class="section-label" data-i18n="ev_label">Upcoming</div>
+    <h2 class="section-title" data-i18n-html="ev_title">Events &amp;<br><span class="acc">Gatherings</span></h2>
   </div>
   <div class="events-grid">
     <div class="event-card r" style="transition-delay:.06s">
-      <span class="event-date">June 21–23, 2025 · Czech Republic</span>
-      <div class="event-title">Zero Balance Gathering</div>
-      <p class="event-desc">A three-day immersive experience of meditation, connection, inspiration and collective growth. Open to all members and friends.</p>
-      <a href="#" class="event-link">View Details</a>
+      <span class="event-date" data-i18n="ev1_date">June 21–23, 2025 · Czech Republic</span>
+      <div class="event-title" data-i18n="ev1_title">Zero Balance Gathering</div>
+      <p class="event-desc" data-i18n="ev1_desc">A three-day immersive experience of meditation, connection, inspiration and collective growth. Open to all members and friends.</p>
+      <a href="#" class="event-link" data-i18n="ev_more1">View Details</a>
     </div>
     <div class="event-card r" style="transition-delay:.12s">
-      <span class="event-date">September 2025 · India</span>
-      <div class="event-title">Autumn India Journey</div>
-      <p class="event-desc">An organised group pilgrimage and cultural immersion exploring the living traditions that inspire our society. Limited places.</p>
-      <a href="#" class="event-link">Learn More</a>
+      <span class="event-date" data-i18n="ev2_date">September 2025 · India</span>
+      <div class="event-title" data-i18n="ev2_title">Autumn India Journey</div>
+      <p class="event-desc" data-i18n="ev2_desc">An organised group pilgrimage and cultural immersion exploring the living traditions that inspire our society. Limited places.</p>
+      <a href="#" class="event-link" data-i18n="ev_more2">Learn More</a>
     </div>
     <div class="event-card r" style="transition-delay:.18s">
-      <span class="event-date">Monthly · Prague</span>
-      <div class="event-title">Satsang Evenings</div>
-      <p class="event-desc">Regular evenings of shared meditation, discussion and community — held monthly in Prague and online for remote members.</p>
-      <a href="#" class="event-link">Join Us</a>
+      <span class="event-date" data-i18n="ev3_date">Monthly · Prague</span>
+      <div class="event-title" data-i18n="ev3_title">Satsang Evenings</div>
+      <p class="event-desc" data-i18n="ev3_desc">Regular evenings of shared meditation, discussion and community — held monthly in Prague and online for remote members.</p>
+      <a href="#" class="event-link" data-i18n="ev_more3">Join Us</a>
     </div>
   </div>
 </section>
@@ -1213,18 +1386,17 @@ footer {
   <div class="join-bg"></div>
   <div class="join-inner">
     <div class="join-left r">
-      <div class="section-label">Your Invitation</div>
+      <div class="section-label" data-i18n="join_label">Your Invitation</div>
       <h2>
-        Join the<br>
-        <em>Society.</em>
+        <span data-i18n-html="join_title">Join the<br><em>Society.</em></span>
       </h2>
     </div>
     <div class="join-right r" style="transition-delay:.15s">
-      <p>Zero Balance Society is an open community — for those who seek stillness, cultural depth, and genuine human connection. Whether you are new to meditation or have walked this path for years, there is a place for you here.</p>
+      <p data-i18n="join_desc">Zero Balance Society is an open community — for those who seek stillness, cultural depth, and genuine human connection. Whether you are new to meditation or have walked this path for years, there is a place for you here.</p>
       <div class="join-btns">
-        <a href="#" class="btn-gold">Become a Member</a>
-        <a href="#" class="btn-outline">Explore Activities</a>
-        <a href="#" class="btn-outline">Contact Us</a>
+        <a href="#" class="btn-gold" data-i18n="join_btn1">Become a Member</a>
+        <a href="#" class="btn-outline" data-i18n="join_btn2">Explore Activities</a>
+        <a href="#" class="btn-outline" data-i18n="join_btn3">Contact Us</a>
       </div>
     </div>
   </div>
@@ -1251,39 +1423,39 @@ footer {
           <span class="sub">Society</span>
         </div>
       </a>
-      <p>A non-profit cultural association inspired by Indian traditions. Based in Czech Republic, open to the world.</p>
+      <p data-i18n="foot_desc">A non-profit cultural association inspired by Indian traditions. Based in Czech Republic, open to the world.</p>
     </div>
     <div class="footer-col">
-      <h5>Navigate</h5>
+      <h5 data-i18n="foot_nav">Navigate</h5>
       <ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Philosophy</a></li>
-        <li><a href="#">Activities</a></li>
-        <li><a href="#">India</a></li>
-        <li><a href="#">Events</a></li>
-        <li><a href="#">Journal</a></li>
+        <li><a href="#" data-i18n="foot_about">About Us</a></li>
+        <li><a href="#" data-i18n="foot_phil">Philosophy</a></li>
+        <li><a href="#" data-i18n="foot_act">Activities</a></li>
+        <li><a href="#" data-i18n="foot_india">India</a></li>
+        <li><a href="#" data-i18n="foot_events">Events</a></li>
+        <li><a href="#" data-i18n="foot_journal">Journal</a></li>
       </ul>
     </div>
     <div class="footer-col">
-      <h5>Connect</h5>
+      <h5 data-i18n="foot_conn">Connect</h5>
       <ul>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">Join the Society</a></li>
-        <li><a href="#">Donate</a></li>
-        <li><a href="#">Media</a></li>
+        <li><a href="#" data-i18n="foot_contact">Contact</a></li>
+        <li><a href="#" data-i18n="foot_join">Join the Society</a></li>
+        <li><a href="#" data-i18n="foot_donate">Donate</a></li>
+        <li><a href="#" data-i18n="foot_media">Media</a></li>
       </ul>
     </div>
     <div class="footer-newsletter">
-      <h5>Stay Connected</h5>
-      <p>Subscribe to our newsletter and be part of our journey toward balance and conscious community.</p>
+      <h5 data-i18n="foot_stay">Stay Connected</h5>
+      <p data-i18n="foot_nl">Subscribe to our newsletter and be part of our journey toward balance and conscious community.</p>
       <div class="sub-form">
-        <input type="email" placeholder="Your email address">
-        <button>Subscribe</button>
+        <input type="email" data-i18n-ph="foot_email" placeholder="Your email address">
+        <button data-i18n="foot_sub">Subscribe</button>
       </div>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 Zero Balance Society · All rights reserved · Czech Republic</p>
+    <p data-i18n="foot_copy">© 2025 Zero Balance Society · All rights reserved · Czech Republic</p>
     <div class="socials">
       <a href="#" title="Instagram">◉</a>
       <a href="#" title="YouTube">▶</a>
@@ -1294,13 +1466,230 @@ footer {
 </footer>
 
 <script>
-// Nav scroll
+// ── TRANSLATIONS ──────────────────────────────────────────────
+const T = {
+  en: {
+    nav_about:      'About',
+    nav_philosophy: 'Philosophy',
+    nav_activities: 'Activities',
+    nav_india:      'India',
+    nav_events:     'Events',
+    nav_journal:    'Journal',
+    nav_join:       'Join the Society',
+
+    hero_label: 'A space for',
+    hero_title: 'Meditation<span class="dot">.</span><br><em>Culture.</em><br>Community<span class="dot">.</span>',
+    hero_btn1:  'Discover More',
+    hero_btn2:  'Watch Intro',
+    hero_desc:  'Zero Balance Society is a non-profit association inspired by Indian traditions. We create space for meditation, education, cultural exchange and conscious connection.',
+    scroll:     'Scroll',
+
+    purpose_label: 'Our Purpose',
+    purpose_title: 'Rooted in tradition.<br><em>Open to the world.</em>',
+    purpose_desc:  'We support contemplative practice, personal growth and cultural understanding through community, shared knowledge and lived experience.',
+
+    p1_name: 'Stillness',   p1_text: 'Cultivating inner silence and awareness.',
+    p2_name: 'Practice',    p2_text: 'Daily sadhana, meditation and mantra.',
+    p3_name: 'Wisdom',      p3_text: 'Learning from timeless teachings.',
+    p4_name: 'Community',   p4_text: 'Connecting people on a shared path.',
+    p5_name: 'Service',     p5_text: 'Contributing to a better world together.',
+
+    about_tag:   'Based in Czech Republic',
+    about_label: 'Who We Are',
+    about_title: 'A Society.<br>A Movement.<br><span class="acc">A Way of Being.</span>',
+    about_p1:    'Zero Balance Society is a non-profit cultural association inspired by Indian traditions. We are dedicated to personal development, education, conscious connection and the support of projects that create a positive impact.',
+    about_p2:    'We believe that true balance begins within — and from that inner stillness, we can transform the world around us.',
+    about_v1:    'Non-profit association based in Czech Republic, open to all',
+    about_v2:    'Inspired by Indian contemplative traditions adapted for modern life',
+    about_v3:    'Building bridges between cultures through shared experience',
+    about_v4:    'Creating space for growth, reflection and conscious community',
+
+    act_label: 'What We Do',
+    act_title: 'Activities &amp;<br><span class="acc">Offerings</span>',
+    act_desc:  'We organise a variety of activities that support body, mind and spirit — inspired by Indian traditions and adapted to our time and context in Central Europe.',
+    act1_tag: 'Core Practice', act1_title: 'Meditation',       act1_desc: 'Regular group practices, guided sessions and deep silence retreats',
+    act2_tag: 'Culture',       act2_title: 'Cultural Events',  act2_desc: 'Lectures, music, dialogue and celebration',
+    act3_tag: 'Pilgrimage',    act3_title: 'India Journeys',   act3_desc: 'Transformative retreats and cultural immersions',
+    act4_tag: 'Knowledge',     act4_title: 'Study &amp; Discussion', act4_desc: 'Exploring wisdom traditions together in an open and curious setting',
+    act5_tag: 'Community',     act5_title: 'Gatherings',       act5_desc: 'Regular community meetings, connection and shared celebration',
+
+    india_label: 'The Source',
+    india_title: 'India —<br>Our Deepest<br><span class="acc">Inspiration</span>',
+    india_s1: 'Annual journeys', india_s2: 'Years active',
+    india_s3: 'Members',         india_s4: 'Languages',
+    india_p1: 'India is not merely a destination for us — it is the living source of our inspiration. The ancient traditions of contemplation, the depth of its culture, and the warmth of its people have shaped everything Zero Balance Society stands for.',
+    india_p2: 'Each year we organise group journeys to India — connecting our members to these traditions through direct experience, not only theory.',
+
+    quote: '"In the stillness of the void,<br>the vibration begins.<br>In the vibration, <strong>balance</strong>.<br>In balance, we come together."',
+
+    ev_label: 'Upcoming',
+    ev_title: 'Events &amp;<br><span class="acc">Gatherings</span>',
+    ev1_date: 'June 21–23, 2025 · Czech Republic', ev1_title: 'Zero Balance Gathering',   ev1_desc: 'A three-day immersive experience of meditation, connection, inspiration and collective growth. Open to all members and friends.', ev_more1: 'View Details',
+    ev2_date: 'September 2025 · India',            ev2_title: 'Autumn India Journey',      ev2_desc: 'An organised group pilgrimage and cultural immersion exploring the living traditions that inspire our society. Limited places.',     ev_more2: 'Learn More',
+    ev3_date: 'Monthly · Prague',                  ev3_title: 'Satsang Evenings',          ev3_desc: 'Regular evenings of shared meditation, discussion and community — held monthly in Prague and online for remote members.',            ev_more3: 'Join Us',
+
+    join_label: 'Your Invitation',
+    join_title: 'Join the<br><em>Society.</em>',
+    join_desc:  'Zero Balance Society is an open community — for those who seek stillness, cultural depth, and genuine human connection. Whether you are new to meditation or have walked this path for years, there is a place for you here.',
+    join_btn1: 'Become a Member', join_btn2: 'Explore Activities', join_btn3: 'Contact Us',
+
+    foot_desc:    'A non-profit cultural association inspired by Indian traditions. Based in Czech Republic, open to the world.',
+    foot_nav:     'Navigate',    foot_conn:    'Connect',      foot_stay:   'Stay Connected',
+    foot_about:   'About Us',    foot_phil:    'Philosophy',   foot_act:    'Activities',
+    foot_india:   'India',       foot_events:  'Events',       foot_journal:'Journal',
+    foot_contact: 'Contact',     foot_join:    'Join the Society', foot_donate: 'Donate', foot_media: 'Media',
+    foot_nl:      'Subscribe to our newsletter and be part of our journey toward balance and conscious community.',
+    foot_email:   'Your email address',
+    foot_sub:     'Subscribe',
+    foot_copy:    '© 2025 Zero Balance Society · All rights reserved · Czech Republic',
+  },
+
+  cs: {
+    nav_about:      'O nás',
+    nav_philosophy: 'Filozofie',
+    nav_activities: 'Aktivity',
+    nav_india:      'Indie',
+    nav_events:     'Události',
+    nav_journal:    'Časopis',
+    nav_join:       'Přidat se',
+
+    hero_label: 'Prostor pro',
+    hero_title: 'Meditaci<span class="dot">.</span><br><em>Kulturu.</em><br>Komunitu<span class="dot">.</span>',
+    hero_btn1:  'Zjistit více',
+    hero_btn2:  'Sledovat intro',
+    hero_desc:  'Zero Balance Society je nezisková asociace inspirovaná indickými tradicemi. Vytváříme prostor pro meditaci, vzdělávání, kulturní výměnu a vědomé propojení.',
+    scroll:     'Scrollovat',
+
+    purpose_label: 'Naše poslání',
+    purpose_title: 'Zakořeněni v tradici.<br><em>Otevřeni světu.</em>',
+    purpose_desc:  'Podporujeme kontemplativní praxi, osobní rozvoj a kulturní porozumění prostřednictvím komunity, sdílených znalostí a živé zkušenosti.',
+
+    p1_name: 'Klid',       p1_text: 'Kultivace vnitřního ticha a vědomí.',
+    p2_name: 'Praxe',      p2_text: 'Každodenní meditace, mantra a sadhana.',
+    p3_name: 'Moudrost',   p3_text: 'Učení z nadčasových tradic.',
+    p4_name: 'Komunita',   p4_text: 'Propojování lidí na společné cestě.',
+    p5_name: 'Služba',     p5_text: 'Přispívání k lepšímu světu.',
+
+    about_tag:   'Sídlíme v České republice',
+    about_label: 'Kdo jsme',
+    about_title: 'Společnost.<br>Hnutí.<br><span class="acc">Způsob bytí.</span>',
+    about_p1:    'Zero Balance Society je nezisková kulturní asociace inspirovaná indickými tradicemi. Věnujeme se osobnímu rozvoji, vzdělávání, vědomému propojení a podpoře projektů, které mají pozitivní dopad.',
+    about_p2:    'Věříme, že skutečná rovnováha začíná uvnitř — a z tohoto vnitřního ticha lze proměnit svět kolem nás.',
+    about_v1:    'Nezisková asociace se sídlem v České republice, otevřená všem',
+    about_v2:    'Inspirovaná indickými kontemplativními tradicemi přizpůsobenými modernímu životu',
+    about_v3:    'Budování mostů mezi kulturami skrze sdílenou zkušenost',
+    about_v4:    'Vytváření prostoru pro růst, reflexi a vědomou komunitu',
+
+    act_label: 'Co děláme',
+    act_title: 'Aktivity &amp;<br><span class="acc">nabídka</span>',
+    act_desc:  'Organizujeme různé aktivity podporující tělo, mysl i ducha — inspirované indickými tradicemi a přizpůsobené naší době a prostředí ve střední Evropě.',
+    act1_tag: 'Základní praxe', act1_title: 'Meditace',           act1_desc: 'Pravidelné skupinové praxe, vedené sezení a retreaty v tichu',
+    act2_tag: 'Kultura',        act2_title: 'Kulturní akce',      act2_desc: 'Přednášky, hudba, dialog a oslavy',
+    act3_tag: 'Pouť',           act3_title: 'Cesty do Indie',     act3_desc: 'Transformační retreaty a kulturní ponoření',
+    act4_tag: 'Poznání',        act4_title: 'Studium &amp; diskuse', act4_desc: 'Společné prozkoumávání moudrých tradic v otevřeném prostředí',
+    act5_tag: 'Komunita',       act5_title: 'Setkání',            act5_desc: 'Pravidelná komunitní setkání, propojení a společné oslavy',
+
+    india_label: 'Zdroj inspirace',
+    india_title: 'Indie —<br>Naše nejhlubší<br><span class="acc">inspirace</span>',
+    india_s1: 'Ročních cest', india_s2: 'Let aktivně',
+    india_s3: 'Členů',        india_s4: 'Jazyků',
+    india_p1: 'Indie pro nás není jen destinací — je živým zdrojem naší inspirace. Starobylé kontemplativní tradice, hloubka kultury a vřelost jejích lidí formovaly vše, za čím Zero Balance Society stojí.',
+    india_p2: 'Každý rok organizujeme skupinové cesty do Indie — propojujeme naše členy s těmito tradicemi skrze přímou zkušenost, nejen teorii.',
+
+    quote: '„V tichu prázdnoty<br>začíná vibrace.<br>Ve vibraci <strong>rovnováha</strong>.<br>V rovnováze se setkáváme."',
+
+    ev_label: 'Nadcházející',
+    ev_title: 'Události &amp;<br><span class="acc">setkání</span>',
+    ev1_date: '21.–23. června 2025 · Česká republika', ev1_title: 'Zero Balance Gathering', ev1_desc: 'Třídenní ponoření do meditace, propojení, inspirace a společného růstu. Otevřeno všem členům a přátelům.', ev_more1: 'Zobrazit detaily',
+    ev2_date: 'Září 2025 · Indie',                     ev2_title: 'Podzimní cesta do Indie',  ev2_desc: 'Organizovaná skupinová pouť a kulturní ponoření do živých tradic, které naši společnost inspirují. Omezený počet míst.', ev_more2: 'Zjistit více',
+    ev3_date: 'Měsíčně · Praha',                       ev3_title: 'Satsangové večery',       ev3_desc: 'Pravidelné večery sdílené meditace, dialogu a komunity — každý měsíc v Praze a online pro vzdálené členy.', ev_more3: 'Přidat se',
+
+    join_label: 'Vaše pozvání',
+    join_title: 'Přidejte se<br><em>k nám.</em>',
+    join_desc:  'Zero Balance Society je otevřená komunita — pro ty, kdo hledají klid, kulturní hloubku a skutečné lidské propojení. Ať jste v meditaci noví, nebo na této cestě jdete léta — je tu pro vás místo.',
+    join_btn1: 'Stát se členem', join_btn2: 'Prozkoumat aktivity', join_btn3: 'Kontaktovat nás',
+
+    foot_desc:    'Nezisková kulturní asociace inspirovaná indickými tradicemi. Sídlíme v České republice, otevřeni světu.',
+    foot_nav:     'Navigace',    foot_conn:    'Kontakt',      foot_stay:   'Zůstaňte v kontaktu',
+    foot_about:   'O nás',       foot_phil:    'Filozofie',    foot_act:    'Aktivity',
+    foot_india:   'Indie',       foot_events:  'Události',     foot_journal:'Časopis',
+    foot_contact: 'Kontakt',     foot_join:    'Přidat se',    foot_donate: 'Darovat', foot_media: 'Média',
+    foot_nl:      'Přihlaste se k newsletteru a staňte se součástí naší cesty k rovnováze a vědomé komunitě.',
+    foot_email:   'Vaše e-mailová adresa',
+    foot_sub:     'Přihlásit',
+    foot_copy:    '© 2025 Zero Balance Society · Všechna práva vyhrazena · Česká republika',
+  }
+};
+
+// ── ENGINE ─────────────────────────────────────────────────────
+let currentLang = localStorage.getItem('zbs_lang') || 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('zbs_lang', lang);
+  const t = T[lang];
+
+  // text content
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+
+  // innerHTML (contains HTML tags)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+
+  // placeholder attributes
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    if (t[key] !== undefined) el.setAttribute('placeholder', t[key]);
+  });
+
+  // update html lang attr
+  document.documentElement.lang = lang;
+
+  // update dropdown UI
+  document.getElementById('langCurrent').textContent = lang.toUpperCase();
+  ['en','cs'].forEach(l => {
+    const item = document.getElementById('item-' + l);
+    const dot  = document.getElementById('dot-' + l);
+    if (item) item.classList.toggle('active', l === lang);
+    if (dot)  dot.style.display = l === lang ? 'block' : 'none';
+  });
+
+  closeLangMenu();
+}
+
+// ── DROPDOWN ───────────────────────────────────────────────────
+function toggleLangMenu() {
+  document.getElementById('langDropdown').classList.toggle('open');
+}
+function closeLangMenu() {
+  document.getElementById('langDropdown').classList.remove('open');
+}
+// close on outside click
+document.addEventListener('click', e => {
+  if (!document.getElementById('langDropdown').contains(e.target)) {
+    closeLangMenu();
+  }
+});
+// close on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLangMenu();
+});
+
+// init on load
+setLang(currentLang);
+
+// ── NAV SCROLL ─────────────────────────────────────────────────
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// Parallax hero image
+// ── PARALLAX ───────────────────────────────────────────────────
 const heroImg = document.querySelector('#heroImg img');
 window.addEventListener('scroll', () => {
   if (heroImg && window.scrollY < window.innerHeight) {
@@ -1308,7 +1697,7 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// Scroll reveal
+// ── SCROLL REVEAL ──────────────────────────────────────────────
 const els = document.querySelectorAll('.r');
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
